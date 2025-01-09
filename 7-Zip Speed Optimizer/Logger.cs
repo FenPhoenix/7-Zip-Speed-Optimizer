@@ -80,7 +80,7 @@ public static class Logger
             {
                 try
                 {
-                    if (new FileInfo(_logFile).Length > Global.ByteSize.MB * 50) ClearLogFile();
+                    if (new FileInfo(_logFile).Length > ByteSize.MB * 50) ClearLogFile();
                 }
                 catch
                 {

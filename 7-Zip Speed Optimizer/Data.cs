@@ -7,7 +7,7 @@ namespace SevenZipSpeedOptimizer;
 
 public sealed class ConfigData
 {
-    public Global.Mode Mode = Global.Mode.Create;
+    public Mode Mode = Mode.Create;
 
     private const int DefaultCompressionLevel = 9;
 
@@ -18,7 +18,7 @@ public sealed class ConfigData
         set => _compressionLevel = value.Clamp(0, 9);
     }
 
-    public Global.CompressionMethod CompressionMethod = Global.CompressionMethod.LZMA2;
+    public CompressionMethod CompressionMethod = CompressionMethod.LZMA2;
 
     private int _threads;
     public int Threads
@@ -32,7 +32,7 @@ public sealed class ConfigData
             }
             else
             {
-                int max = CompressionMethod == Global.CompressionMethod.LZMA2 ? CPUThreads * 2 : Math.Min(CPUThreads, 2);
+                int max = CompressionMethod == CompressionMethod.LZMA2 ? CPUThreads * 2 : Math.Min(CPUThreads, 2);
                 _threads = value.Clamp(0, max);
             }
         }

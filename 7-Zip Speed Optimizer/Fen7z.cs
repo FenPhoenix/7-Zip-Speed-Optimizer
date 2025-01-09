@@ -97,37 +97,6 @@ public static class Fen7z
     /// <param name="sevenZipPathAndExe"></param>
     /// <param name="archivePath"></param>
     /// <param name="outputPath"></param>
-    /// <param name="entriesCount">Only used if <paramref name="progress"/> is provided (non-null).</param>
-    /// <param name="listFile"></param>
-    /// <param name="fileNamesList"></param>
-    /// <param name="progress"></param>
-    /// <returns></returns>
-    public static Result Extract(
-        string sevenZipPathAndExe,
-        string archivePath,
-        string outputPath,
-        int entriesCount = 0,
-        string listFile = "",
-        List<string>? fileNamesList = null,
-        IProgress<ProgressReport>? progress = null)
-    {
-        return Extract(
-            sevenZipPathAndExe: sevenZipPathAndExe,
-            archivePath: archivePath,
-            outputPath: outputPath,
-            cancellationToken: CancellationToken.None,
-            entriesCount: entriesCount,
-            listFile: listFile,
-            fileNamesList: fileNamesList,
-            progress: progress);
-    }
-
-    /// <summary>
-    /// Extract a .7z file wholly or partially.
-    /// </summary>
-    /// <param name="sevenZipPathAndExe"></param>
-    /// <param name="archivePath"></param>
-    /// <param name="outputPath"></param>
     /// <param name="cancellationToken"></param>
     /// <param name="entriesCount">Only used if <paramref name="progress"/> is provided (non-null).</param>
     /// <param name="listFile"></param>

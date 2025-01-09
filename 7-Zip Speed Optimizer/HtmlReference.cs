@@ -28,7 +28,7 @@ internal static class HtmlReference
         List<string> readmeFilesFullPaths,
         string[] allFmFilesFullPaths)
     {
-        List<Global.NameAndIndex> htmlRefFiles = new();
+        List<NameAndIndex> htmlRefFiles = new();
 
         foreach (string f in readmeFilesFullPaths)
         {
@@ -49,7 +49,7 @@ internal static class HtmlReference
         {
             for (int ri = 0; ri < htmlRefFiles.Count; ri++)
             {
-                Global.NameAndIndex f = htmlRefFiles[ri];
+                NameAndIndex f = htmlRefFiles[ri];
                 Trace.WriteLine(f.Name);
                 string re = allFmFilesFullPaths[f.Index];
 
@@ -75,7 +75,7 @@ internal static class HtmlReference
 
         if (htmlRefFiles.Count > 0)
         {
-            foreach (Global.NameAndIndex f in htmlRefFiles)
+            foreach (NameAndIndex f in htmlRefFiles)
             {
                 ret.Add(f.Name);
             }
@@ -84,7 +84,7 @@ internal static class HtmlReference
         return ret;
     }
 
-    private static void AddHtmlRefFile(string name, string fullName, int i, string content, List<Global.NameAndIndex> htmlRefFiles)
+    private static void AddHtmlRefFile(string name, string fullName, int i, string content, List<NameAndIndex> htmlRefFiles)
     {
         /*
         We just do a dumb string-match search through the whole file. While it's true that HTML files have their
@@ -100,7 +100,7 @@ internal static class HtmlReference
             content.ContainsI(name) &&
             htmlRefFiles.TrueForAll(x => x.Index != i))
         {
-            htmlRefFiles.Add(new Global.NameAndIndex(fullName, i));
+            htmlRefFiles.Add(new NameAndIndex(fullName, i));
         }
     }
 
@@ -108,5 +108,5 @@ internal static class HtmlReference
         HtmlRefExcludes.Any(name.EndsWithI) ||
         _imageFileExtensions.Any(name.EndsWithI) ||
         // 128k is generous. Any text or markup sort of file should be WELL under that.
-        size > Global.ByteSize.KB * 128;
+        size > ByteSize.KB * 128;
 }

@@ -24,10 +24,10 @@ internal static class ConfigIni
             string lineT = lines[i].Trim();
             if (lineT.TryGetValueO("Mode=", out string value))
             {
-                FieldInfo? field = typeof(Global.Mode).GetField(value, _bFlagsEnum);
+                FieldInfo? field = typeof(Mode).GetField(value, _bFlagsEnum);
                 if (field != null)
                 {
-                    Config.Mode = (Global.Mode)field.GetValue(null);
+                    Config.Mode = (Mode)field.GetValue(null);
                 }
             }
             if (lineT.TryGetValueO("CompressionLevel=", out value))
@@ -39,10 +39,10 @@ internal static class ConfigIni
             }
             else if (lineT.TryGetValueO("CompressionMethod=", out value))
             {
-                FieldInfo? field = typeof(Global.CompressionMethod).GetField(value, _bFlagsEnum);
+                FieldInfo? field = typeof(CompressionMethod).GetField(value, _bFlagsEnum);
                 if (field != null)
                 {
-                    Config.CompressionMethod = (Global.CompressionMethod)field.GetValue(null);
+                    Config.CompressionMethod = (CompressionMethod)field.GetValue(null);
                 }
             }
             else if (lineT.TryGetValueO("Threads=", out value))
@@ -51,24 +51,6 @@ internal static class ConfigIni
                 {
                     Config.Threads = result;
                 }
-            }
-        }
-
-        return;
-
-        static bool? GetNullableBoolValue(string value)
-        {
-            if (value == bool.TrueString)
-            {
-                return true;
-            }
-            else if (value == bool.FalseString)
-            {
-                return false;
-            }
-            else
-            {
-                return null;
             }
         }
     }
@@ -80,13 +62,5 @@ internal static class ConfigIni
         sw.WriteLine("CompressionLevel=" + Config.CompressionLevel.ToStrInv());
         sw.WriteLine("CompressionMethod=" + Config.CompressionMethod);
         sw.WriteLine("Threads=" + Config.Threads.ToStrInv());
-        return;
-
-        static string GetNullableBoolValue(bool? value) => value switch
-        {
-            true => bool.TrueString,
-            false => bool.FalseString,
-            _ => "",
-        };
     }
 }

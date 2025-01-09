@@ -17,7 +17,7 @@ public sealed class DarkErrorDialog : TaskDialogCustom
             icon: icon,
             yesText: "View log",
             noText: "OK",
-            defaultButton: Global.MBoxButton.Yes)
+            defaultButton: MBoxButton.Yes)
     {
         AcceptButton = NoButton;
         YesButton.DialogResult = DialogResult.None;

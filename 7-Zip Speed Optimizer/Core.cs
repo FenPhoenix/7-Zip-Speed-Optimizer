@@ -47,7 +47,7 @@ internal static class Core
     string outputArchive,
     string listFile,
     int level,
-    Global.CompressionMethod method,
+    CompressionMethod method,
     CancellationToken cancellationToken)
     {
         Progress<Fen7z.ProgressReport> progress = new(ReportProgress);
@@ -91,7 +91,7 @@ internal static class Core
         ListFileData listFileData,
         List<FileToRename> itemsToRename,
         int level,
-        Global.CompressionMethod method,
+        CompressionMethod method,
         CancellationToken cancellationToken)
     {
         foreach (var item in itemsToRename)
@@ -207,7 +207,7 @@ internal static class Core
         string outputArchive,
         ListFileData listFileData,
         int level,
-        Global.CompressionMethod method,
+        CompressionMethod method,
         CancellationToken cancellationToken)
     {
         string listFile = Path.Combine(Paths.Temp, AL_Scan_Block_ListFileName);
@@ -329,7 +329,7 @@ internal static class Core
         string listFile,
         ListFileData listFileData,
         int level,
-        Global.CompressionMethod method,
+        CompressionMethod method,
         CancellationToken cancellationToken)
     {
         View.SetProgressMessage("Adding remaining files to archive...");
@@ -365,7 +365,7 @@ internal static class Core
         return new RunProcessResult(true, outputArchive, "", null);
     }
 
-    internal static string GetArgs(int level, Global.CompressionMethod method)
+    internal static string GetArgs(int level, CompressionMethod method)
     {
         if (level is < 0 or > 9)
         {
@@ -459,16 +459,16 @@ internal static class Core
 
                 if (File.Exists(outputArchive))
                 {
-                    (Global.MBoxButton buttonPressed, _) = View.ShowMultiChoiceDialog(
+                    (MBoxButton buttonPressed, _) = View.ShowMultiChoiceDialog(
                         message: "Output archive already exists. Overwrite it?",
                         title: "Alert",
                         icon: MessageBoxIcon.Warning,
                         yes: "Overwrite",
                         no: "Cancel",
                         yesIsDangerous: true,
-                        defaultButton: Global.MBoxButton.No);
+                        defaultButton: MBoxButton.No);
 
-                    if (buttonPressed != Global.MBoxButton.Yes)
+                    if (buttonPressed != MBoxButton.Yes)
                     {
                         return;
                     }
@@ -487,7 +487,7 @@ internal static class Core
                 }
 
                 int level = Config.CompressionLevel;
-                Global.CompressionMethod method = Config.CompressionMethod;
+                CompressionMethod method = Config.CompressionMethod;
 
                 ListFileData listFileData;
                 string listFile_Rest;
@@ -597,7 +597,7 @@ internal static class Core
 
                 string tempExtractedDir = Paths.Temp_SourceCopy;
                 int level = Config.CompressionLevel;
-                Global.CompressionMethod method = Config.CompressionMethod;
+                CompressionMethod method = Config.CompressionMethod;
 
 
                 if (File.Exists(outputDir))

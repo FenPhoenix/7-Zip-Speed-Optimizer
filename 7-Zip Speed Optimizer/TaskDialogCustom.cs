@@ -33,7 +33,7 @@ public partial class TaskDialogCustom : Form
         bool cancelIsDangerous = false,
         string? checkBoxText = null,
         bool? checkBoxChecked = null,
-        Global.MBoxButton defaultButton = Global.MBoxButton.Cancel,
+        MBoxButton defaultButton = MBoxButton.Cancel,
         bool viewLogButtonVisible = false)
     {
         // All numbers are just matching the original Win32 task dialog as closely as possible. Don't worry
@@ -112,7 +112,7 @@ public partial class TaskDialogCustom : Form
 
         CancelButton = _cancelButtonVisible ? Cancel_Button : _noButtonVisible ? NoButton : YesButton;
 
-        static void ThrowForDefaultButton(Global.MBoxButton button) => throw new ArgumentException("Default button not visible: " + button);
+        static void ThrowForDefaultButton(MBoxButton button) => throw new ArgumentException("Default button not visible: " + button);
 
         NoButton.DialogResult = DialogResult.No;
         YesButton.DialogResult = DialogResult.Yes;
@@ -120,17 +120,17 @@ public partial class TaskDialogCustom : Form
 
         switch (defaultButton)
         {
-            case Global.MBoxButton.Yes:
-                if (!_yesButtonVisible) ThrowForDefaultButton(Global.MBoxButton.Yes);
+            case MBoxButton.Yes:
+                if (!_yesButtonVisible) ThrowForDefaultButton(MBoxButton.Yes);
                 AcceptButton = YesButton;
                 break;
-            case Global.MBoxButton.No:
-                if (!_noButtonVisible) ThrowForDefaultButton(Global.MBoxButton.No);
+            case MBoxButton.No:
+                if (!_noButtonVisible) ThrowForDefaultButton(MBoxButton.No);
                 AcceptButton = NoButton;
                 break;
-            case Global.MBoxButton.Cancel:
+            case MBoxButton.Cancel:
             default:
-                if (!_cancelButtonVisible) ThrowForDefaultButton(Global.MBoxButton.Cancel);
+                if (!_cancelButtonVisible) ThrowForDefaultButton(MBoxButton.Cancel);
                 AcceptButton = Cancel_Button;
                 break;
         }

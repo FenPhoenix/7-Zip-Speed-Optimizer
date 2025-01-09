@@ -69,26 +69,18 @@ public sealed partial class MainForm : Form, IEventDisabler
 
     public bool DragDropEnabled => _operationTypeInProgress == OperationType.None;
 
-    public void SetMode(Global.Mode mode)
+    public void SetMode(Mode mode)
     {
         ModeTabControl.SelectedTab = mode switch
         {
-            Global.Mode.Repack => RepackTabPage,
+            Mode.Repack => RepackTabPage,
             _ => CreateTabPage,
         };
     }
 
-    public string SourceFMPath
-    {
-        get => SourceFMDirectoryTextBox.Text;
-        set => SourceFMDirectoryTextBox.Text = value;
-    }
+    public string SourceFMPath => SourceFMDirectoryTextBox.Text;
 
-    public string OutputArchive
-    {
-        get => OutputArchiveTextBox.Text;
-        set => OutputArchiveTextBox.Text = value;
-    }
+    public string OutputArchive => OutputArchiveTextBox.Text;
 
     public string[] Repack_Archives => ArchivesToRepackListBox.ItemsAsStrings();
 
@@ -101,7 +93,7 @@ public sealed partial class MainForm : Form, IEventDisabler
             : 0;
     }
 
-    public void SetCompressionMethod(Global.CompressionMethod value)
+    public void SetCompressionMethod(CompressionMethod value)
     {
         int index = (int)value;
         using (new DisableEvents(this))
@@ -298,7 +290,7 @@ public sealed partial class MainForm : Form, IEventDisabler
     private void PopulateThreadsComboBox(bool switching = false)
     {
         FriendlyStringAndBackingValue<int>[] items =
-            Config.CompressionMethod == Global.CompressionMethod.LZMA2
+            Config.CompressionMethod == CompressionMethod.LZMA2
                 ? Lzma2ThreadItems
                 : LzmaThreadItems;
 
@@ -318,7 +310,7 @@ public sealed partial class MainForm : Form, IEventDisabler
         Config.Threads =
             NumberOfCPUThreadsComboBox.SelectedIndex == 0
                 ? -1
-                : Config.CompressionMethod == Global.CompressionMethod.LZMA2
+                : Config.CompressionMethod == CompressionMethod.LZMA2
                     ? Lzma2ThreadItems[NumberOfCPUThreadsComboBox.SelectedIndex].BackingValue
                     : LzmaThreadItems[NumberOfCPUThreadsComboBox.SelectedIndex].BackingValue;
     }
@@ -394,7 +386,7 @@ public sealed partial class MainForm : Form, IEventDisabler
 
     private void ModeTabControl_Selected(object sender, TabControlEventArgs e)
     {
-        Config.Mode = ModeTabControl.SelectedTab == RepackTabPage ? Global.Mode.Repack : Global.Mode.Create;
+        Config.Mode = ModeTabControl.SelectedTab == RepackTabPage ? Mode.Repack : Mode.Create;
     }
 
     private async void RepackButton_Click(object sender, EventArgs e)
@@ -468,7 +460,7 @@ public sealed partial class MainForm : Form, IEventDisabler
     /// <param name="defaultButton"></param>
     /// <param name="viewLogButtonVisible"></param>
     /// <returns></returns>
-    public (Global.MBoxButton ButtonPressed, bool CheckBoxChecked)
+    public (MBoxButton ButtonPressed, bool CheckBoxChecked)
     ShowMultiChoiceDialog(string message,
         string title,
         MessageBoxIcon icon,
@@ -479,9 +471,9 @@ public sealed partial class MainForm : Form, IEventDisabler
         bool noIsDangerous = false,
         bool cancelIsDangerous = false,
         string? checkBoxText = null,
-        Global.MBoxButton defaultButton = Global.MBoxButton.Yes,
+        MBoxButton defaultButton = MBoxButton.Yes,
         bool viewLogButtonVisible = false) =>
-        ((Global.MBoxButton, bool))Invoke(() =>
+        ((MBoxButton, bool))Invoke(() =>
         {
             using var d = new TaskDialogCustom(
                 message: message,
@@ -502,11 +494,11 @@ public sealed partial class MainForm : Form, IEventDisabler
             return (DialogResultToMBoxButton(result), d.IsVerificationChecked);
         });
 
-    private static Global.MBoxButton DialogResultToMBoxButton(DialogResult dialogResult) => dialogResult switch
+    private static MBoxButton DialogResultToMBoxButton(DialogResult dialogResult) => dialogResult switch
     {
-        DialogResult.Yes => Global.MBoxButton.Yes,
-        DialogResult.No => Global.MBoxButton.No,
-        _ => Global.MBoxButton.Cancel,
+        DialogResult.Yes => MBoxButton.Yes,
+        DialogResult.No => MBoxButton.No,
+        _ => MBoxButton.Cancel,
     };
 
     private void SourceFMDirectoryTextBox_DragEnter(object sender, DragEventArgs e)

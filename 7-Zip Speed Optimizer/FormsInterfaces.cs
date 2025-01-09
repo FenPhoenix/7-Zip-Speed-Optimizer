@@ -43,26 +43,3 @@ internal readonly ref struct DisableEvents
         if (_active) _obj.EventsDisabled = (_obj.EventsDisabled - 1).ClampToZero();
     }
 }
-
-public interface IUpdateRegion
-{
-    void BeginUpdate();
-    void EndUpdate();
-}
-
-[StructLayout(LayoutKind.Auto)]
-internal readonly ref struct UpdateRegion
-{
-    private readonly IUpdateRegion _obj;
-
-    public UpdateRegion(IUpdateRegion obj)
-    {
-        _obj = obj;
-        _obj.BeginUpdate();
-    }
-
-    public void Dispose()
-    {
-        _obj.EndUpdate();
-    }
-}

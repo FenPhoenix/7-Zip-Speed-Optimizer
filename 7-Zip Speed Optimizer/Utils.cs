@@ -16,7 +16,7 @@ internal static class Utils
     public static HashSetPathI ToHashSetPathI(this IEnumerable<string> source) => new(source);
 
     private static readonly PathComparer _pathComparer = new();
-    public sealed class PathComparer : StringComparer
+    private sealed class PathComparer : StringComparer
     {
         // Allocations here, but this doesn't ever seem to get hit for Add() or Contains() calls
         public override int Compare(string? x, string? y)
@@ -56,20 +56,6 @@ internal static class Utils
     }
 
     public static string ToStringOrEmpty(this object? obj) => obj?.ToString() ?? "";
-
-    public static TSource? FirstOrDefault_PastFirstIndex<TSource>(this TSource[] source, Func<TSource, bool> predicate)
-    {
-        for (int i = 0; i < source.Length; i++)
-        {
-            TSource item = source[i];
-            if (i > 0 && predicate(item))
-            {
-                return item;
-            }
-        }
-
-        return default;
-    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static string ToStrInv(this int value) => value.ToString(NumberFormatInfo.InvariantInfo);
@@ -738,8 +724,4 @@ internal static class FMFiles
 
     // For Thief 3 missions, all of them have this file, and then any other .gmp files are the actual missions
     internal const string EntryGmp = "Entry.gmp";
-
-    internal const string TDM_DarkModTxt = "darkmod.txt";
-    internal const string TDM_ReadmeTxt = "readme.txt";
-    internal const string TDM_MapSequence = "tdm_mapsequence.txt";
 }
