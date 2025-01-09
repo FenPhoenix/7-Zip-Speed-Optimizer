@@ -19,8 +19,7 @@ internal static class Paths
 
     internal static readonly string Startup = Application.StartupPath;
     internal static readonly string ConfigFile = Path.Combine(Startup, "Config.ini");
-    // TODO: Make a better / more unique temp folder name
-    internal static readonly string Temp = Path.Combine(Path.GetTempPath(), "LFFMP");
+    internal static readonly string Temp = Path.Combine(Startup, "Temp");
     internal static readonly string Temp_SourceCopy = Path.Combine(Temp, "SrcCopy");
     internal static readonly string SevenZipExe = Path.Combine(Startup, "7z", "7z.exe");
     internal static readonly string SevenZipDll = Path.Combine(Startup, "7z", "7z.dll");
