@@ -41,6 +41,8 @@ public sealed partial class MainForm : Form, IEventDisabler
     {
         InitializeComponent();
 
+        Text = "7-Zip Speed Optimizer " + Application.ProductVersion;
+
         Icon = Resources.App;
 
 #if !DEV_TESTING
