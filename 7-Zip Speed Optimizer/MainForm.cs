@@ -4,8 +4,8 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
-using AngelLoader.Forms.WinFormsNative.Dialogs;
 using SevenZipSpeedOptimizer.Properties;
+using SevenZipSpeedOptimizer.WinFormsNative.Dialogs;
 using SevenZipSpeedOptimizer.WinFormsNative.Taskbar;
 
 namespace SevenZipSpeedOptimizer;

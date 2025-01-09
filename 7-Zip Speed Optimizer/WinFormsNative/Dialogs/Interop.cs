@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
 
-namespace AngelLoader.Forms.WinFormsNative.Dialogs;
+namespace SevenZipSpeedOptimizer.WinFormsNative.Dialogs;
 
 #region CoClass stuff
 
