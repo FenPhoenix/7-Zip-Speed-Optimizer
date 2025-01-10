@@ -196,15 +196,38 @@ internal static class Utils
         }
         catch (Exception ex)
         {
+            Logger.Log("Unable to set file attributes for " + fileOnDiskFullPath, ex);
+            if (throwException) throw;
+        }
+    }
+
+    public static void Dir_UnSetReadOnly(string dirOnDiskFullPath, bool throwException = false)
+    {
+        try
+        {
+            // IMPORTANT: ReadOnly is NOT ignored for directories despite what it says here, as I learned to my cost:
+            // https://support.microsoft.com/en-us/topic/you-cannot-view-or-change-the-read-only-or-the-system-attributes-of-folders-in-windows-server-2003-in-windows-xp-in-windows-vista-or-in-windows-7-55bd5ec5-d19e-6173-0df1-8f5b49247165
+            _ = new DirectoryInfo(dirOnDiskFullPath).Attributes &= ~FileAttributes.ReadOnly;
+        }
+        catch (Exception ex)
+        {
+            Logger.Log("Unable to set directory attributes for " + dirOnDiskFullPath, ex);
             if (throwException) throw;
         }
     }
 
     internal static void DirAndFileTree_UnSetReadOnly(string path, bool throwException = false)
     {
+        Dir_UnSetReadOnly(path, throwException);
+
         foreach (string f in Directory.GetFiles(path, "*", SearchOption.AllDirectories))
         {
             File_UnSetReadOnly(f, throwException);
+        }
+
+        foreach (string d in Directory.GetDirectories(path, "*", SearchOption.AllDirectories))
+        {
+            Dir_UnSetReadOnly(d, throwException);
         }
     }
 

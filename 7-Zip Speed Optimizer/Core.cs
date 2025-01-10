@@ -529,7 +529,15 @@ internal static class Core
             finally
             {
                 View.SetProgressMessage("Cleaning up...");
-                Paths.CreateOrClearTempPath(Paths.TempPaths.Base);
+                try
+                {
+                    Paths.CreateOrClearTempPath(Paths.TempPaths.Base);
+                }
+                catch (Exception ex)
+                {
+                    View.ShowError("There was an error while trying to delete temp files in '" + Paths.Temp +
+                                   "'. The current FM was still created correctly, but the temp folder should be cleared out.");
+                }
                 View.EndCreateSingleArchiveOperation();
                 _cts.Dispose();
             }
@@ -700,7 +708,14 @@ internal static class Core
             finally
             {
                 View.SetProgressMessage("Cleaning up...");
-                Paths.CreateOrClearTempPath(Paths.TempPaths.Base);
+                try
+                {
+                    Paths.CreateOrClearTempPath(Paths.TempPaths.Base);
+                }
+                catch (Exception ex)
+                {
+                    View.ShowError("There was an error while trying to delete temp files in '" + Paths.Temp + "'.");
+                }
                 View.EndRepackBatchOperation();
                 _cts.Dispose();
 

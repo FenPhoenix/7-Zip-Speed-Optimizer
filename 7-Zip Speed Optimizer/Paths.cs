@@ -36,20 +36,45 @@ internal static class Paths
 
         if (Directory.Exists(path))
         {
-            Utils.DirAndFileTree_UnSetReadOnly(path, throwException: true);
+            try
+            {
+                Utils.DirAndFileTree_UnSetReadOnly(path, throwException: true);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log($"Exception setting temp path subtree to all non-readonly.{NL}" +
+                           "path was: " + path, ex);
+                throw;
+            }
 
             foreach (string f in Directory.GetFiles(path, "*", SearchOption.TopDirectoryOnly))
             {
                 File.Delete(f);
             }
-            foreach (string d in Directory.GetDirectories(path, "*", SearchOption.TopDirectoryOnly))
+            try
             {
-                Directory.Delete(d, recursive: true);
+                foreach (string d in Directory.GetDirectories(path, "*", SearchOption.TopDirectoryOnly))
+                {
+                    Directory.Delete(d, recursive: true);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log("Exception clearing temp path " + path, ex);
+                throw;
             }
         }
         else
         {
-            Directory.CreateDirectory(path);
+            try
+            {
+                Directory.CreateDirectory(path);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log("Exception creating temp path " + path, ex);
+                throw;
+            }
         }
     }
 }
