@@ -407,8 +407,6 @@ internal static class Core
         int threads = Config.Threads;
         if (threads > -1)
         {
-            Trace.WriteLine("********** threads non-default: " + threads);
-
             args += " -mmt=" + threads.ToStrInv();
         }
         args += " -mhc=off -mqs=off";
@@ -1106,31 +1104,6 @@ internal static class Core
         }
 
         static bool IsInBaseDir(string fn) => !fn.Rel_ContainsDirSep();
-    }
-
-    internal static string GetSevenZipVersion(string exe)
-    {
-        try
-        {
-            FileVersionInfo vi = FileVersionInfo.GetVersionInfo(exe);
-
-            string versionString = vi.ProductMajorPart.ToStrInv() + "." +
-                                   vi.ProductMinorPart.ToStrInv().PadLeft(2, '0');
-            if (vi.ProductPrivatePart > 0)
-            {
-                versionString += "." + vi.ProductBuildPart.ToStrInv() + "." + vi.ProductPrivatePart.ToStrInv();
-            }
-            if (vi.ProductBuildPart > 0)
-            {
-                versionString += "." + vi.ProductBuildPart.ToStrInv();
-            }
-
-            return versionString;
-        }
-        catch
-        {
-            return "";
-        }
     }
 
     internal static bool FilesDropped(object data, [NotNullWhen(true)] out string[]? droppedItems)

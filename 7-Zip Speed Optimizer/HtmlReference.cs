@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -50,7 +49,6 @@ internal static class HtmlReference
             for (int ri = 0; ri < htmlRefFiles.Count; ri++)
             {
                 NameAndIndex f = htmlRefFiles[ri];
-                Trace.WriteLine(f.Name);
                 string re = allFmFilesFullPaths[f.Index];
 
                 if (RefFileExcluded(f.Name, new FileInfo(re).Length)) continue;
