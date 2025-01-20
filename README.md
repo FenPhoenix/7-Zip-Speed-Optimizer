@@ -40,3 +40,23 @@ But what about file size? Does this spectacular speed increase come at the cost 
 ---
 
 *I have no easy way to benchmark FMSel properly, so tests had to be run and timed manually. But the difference is so vast that it hardly matters: however you slice it, the standard set takes multiple minutes and the optimized set takes a handful of seconds.
+
+---
+
+### How it works:
+
+<img src="https://i.postimg.cc/Mp4ZNMGQ/7zLayout.png"/>
+
+A "block" is a solid segment of compressed data in which one or more files may be located. If a block contains multiple files, those files are compressed together as one long run of data, with no separation between files. This improves compression.
+
+Importantly, blocks represent the boundaries of random access: If a file is located at the start of a block, then it can be decompressed immediately, whereas if a file is located some ways into a block, then all data before it in that block must be decompressed and thrown away before the file itself can be decompressed.
+
+Thus, the basic idea is to place files loaders will want to read at the start of blocks so that they can be accessed without needing to decompress any data in front of them. However, splitting a 7z file into too many blocks results in a poor compression ratio. Therefore, care has been taken to balance these two competing concerns.
+
+Files which are very small and may not all need to be read can each be placed in their own block, maintaining instant access to any of them while having negligible effect on compression ratio.
+
+To maintain good compression ratios, .mis files (which are among the largest files in an FM) are packed in the "remaining files" block. However, the smallest used .mis file is placed at the start of the block for fast access. For Thief 1 and 2, a "used" .mis file means one that is specified in missflag.str and not marked "skip". For System Shock 2, all .mis files are considered "used". For Thief 3, no mission files need to be read to detect the game type, so this logic doesn't apply.
+
+The reason for distinguishing "used" .mis files is that unused .mis files are sometimes dummy files that were created to placate DarkLoader or for other reasons. AngelLoader's game detector requires a validly structured .mis file in order to work, and it ignores unused .mis files for this reason. Some loaders may use alternative means of detecting valid .mis files such as "DEADBEEF" byte sequence detection, and will read the first valid .mis file they come across, rather than the smallest. However, the optimized layout works for them too: the fact that the smallest used .mis file is placed first in its block also means it's placed before any other .mis file in the entries list, so any loader taking the first valid .mis file it sees will automatically get the file that is both smallest and also at the start of its block.
+
+The "main_x" images are placed in their own block because GarrettLoader used them as thumbnails when viewing FMs, and other loaders in the future may also want to do so. Furthermore, it was found that placing these images in their own block had negligible effect on 7z file size.
