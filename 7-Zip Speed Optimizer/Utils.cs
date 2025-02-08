@@ -656,6 +656,120 @@ internal static class Utils
         }
         return ret;
     }
+
+    #region Get file / dir names
+
+    /// <summary>
+    /// Strips the leading path from the filename, taking into account both / and \ chars.
+    /// </summary>
+    /// <param name="path"></param>
+    /// <returns></returns>
+    internal static string GetFileNameFast(this string path)
+    {
+        int i1 = path.LastIndexOf('\\');
+        int i2 = path.LastIndexOf('/');
+
+        return i1 == -1 && i2 == -1 ? path : path.Substring(Math.Max(i1, i2) + 1);
+    }
+
+    public static readonly char[] CA_BS_FS = { '\\', '/' };
+
+    internal static string GetDirNameFast(this string path) => GetFileNameFast(path.TrimEnd(CA_BS_FS));
+
+    public static string ToForwardSlashes(this string value) => value.Replace('\\', '/');
+
+    public static string ToForwardSlashes_Net(this string value)
+    {
+        return value.StartsWithO(@"\\") ? @"\\" + value.Substring(2).ToForwardSlashes() : value.ToForwardSlashes();
+    }
+
+    internal static bool TryCombineFilePathAndCheckExistence(
+        string pathPart1,
+        string pathPart2,
+        out string combinedPath)
+    {
+        try
+        {
+            string ret = Path.Combine(pathPart1, pathPart2);
+            if (File.Exists(ret))
+            {
+                combinedPath = ret;
+                return true;
+            }
+            else
+            {
+                combinedPath = "";
+                return false;
+            }
+        }
+        catch
+        {
+            combinedPath = "";
+            return false;
+        }
+    }
+
+    #endregion
+
+    /// <summary>
+    /// Returns the list of FM archive paths, returning subfolders as well if that option is enabled.
+    /// </summary>
+    /// <returns></returns>
+    internal static List<string> GetFMArchivePaths(
+        List<string> fmArchivePaths,
+        bool includeSubfolders)
+    {
+        // Always return a COPY of the paths list, so the caller can modify it safely if it wants
+        var paths = new List<string>(fmArchivePaths.Count);
+        foreach (string path in fmArchivePaths)
+        {
+            paths.Add(path);
+            if (includeSubfolders)
+            {
+                try
+                {
+                    string[] dirs = Directory.GetDirectories(path, "*", SearchOption.AllDirectories);
+                    foreach (string dir in dirs)
+                    {
+                        if (!dir.GetDirNameFast().EqualsI(".fix") &&
+                            // @DIRSEP: '/' conversion due to string.ContainsI()
+                            !dir.ToForwardSlashes_Net().ContainsI("/.fix/"))
+                        {
+                            paths.Add(dir);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log("subfolders=true, Exception in GetDirectories", ex);
+                }
+            }
+        }
+
+        return paths;
+    }
+
+    /// <summary>
+    /// Returns the full path of the first matching FM archive file, or the empty string if no matches were found.
+    /// </summary>
+    /// <param name="fmArchive"></param>
+    /// <param name="archivePaths"></param>
+    /// <returns></returns>
+    [PublicAPI]
+    internal static string FindFirstMatch(string fmArchive, List<string> archivePaths)
+    {
+        if (fmArchive.IsEmpty()) return "";
+
+        foreach (string path in archivePaths)
+        {
+            if (TryCombineFilePathAndCheckExistence(path, fmArchive, out string f))
+            {
+                return f;
+            }
+        }
+
+        return "";
+    }
 }
 
 internal static class FMFileExtensions

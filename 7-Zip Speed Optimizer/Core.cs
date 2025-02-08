@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -1147,4 +1148,156 @@ internal static class Core
             MessageBox.Show("Unable to open the log file." + $"{NL}{NL}" + Paths.LogFile, "Error");
         }
     }
+
+    #region Ini update
+
+    /// <summary>
+    /// Uses <see cref="StringComparison.OrdinalIgnoreCase"/>.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool EqualsTrue(this string value) => string.Equals(value, bool.TrueString, StringComparison.OrdinalIgnoreCase);
+
+    private sealed class AngelLoaderFM
+    {
+        internal string Archive = "";
+        internal ulong SizeBytes = 0;
+    }
+
+    private sealed class LineAndIndex
+    {
+        private string _line;
+        internal string Line
+        {
+            get => _line;
+            set
+            {
+                if (_line != value)
+                {
+                    Changed = true;
+                }
+                _line = value;
+            }
+        }
+        internal readonly int Index;
+        internal bool Changed { get; private set; }
+
+        public LineAndIndex(string line, int index)
+        {
+            _line = line;
+            Index = index;
+        }
+    }
+
+    private sealed class AL_FM_IniSection
+    {
+        internal readonly List<LineAndIndex> Lines = new();
+        internal string ArchivePath = "";
+    }
+
+    // TODO: Generate 7z optimized set from AngelLoader set (will take all day...)
+    //  But it's the only way to test...
+
+    // TODO: Only update files that match the ones we actually created / the source files we genned from
+    internal static void UpdateAngelLoaderDatabaseTo7z()
+    {
+        // TODO: Make a backup of FMData.ini before we start
+
+        const string configIni = @"C:\AngelLoader\Data\Config.ini";
+
+        List<string> archivePaths = new();
+        bool includeSubfolders = false;
+
+        string[] configIniLines = File.ReadAllLines(configIni);
+        for (int i = 0; i < configIniLines.Length; i++)
+        {
+            string lineT = configIniLines[i].Trim();
+            if (lineT.TryGetValueO("FMArchivePath=", out string value))
+            {
+                archivePaths.Add(value);
+            }
+            else if (lineT.TryGetValueO("FMArchivePathsIncludeSubfolders=", out value))
+            {
+                includeSubfolders = value.EqualsTrue();
+            }
+        }
+
+        // TODO: Temporary
+        const string fmDataIni = @"C:\AngelLoader\Data\FMData_7zso_test.ini";
+
+        string[] lines = File.ReadAllLines(fmDataIni);
+
+        List<AL_FM_IniSection> sections = new();
+
+        for (int i = 0; i < lines.Length; i++)
+        {
+            string lineT = lines[i].Trim();
+            if (lineT == "[FM]")
+            {
+                AL_FM_IniSection section = new();
+                sections.Add(section);
+
+                while (i < lines.Length - 1)
+                {
+                    int j = i + 1;
+
+                    string lt = lines[j].Trim();
+
+                    if (!lt.IsIniHeader())
+                    {
+                        section.Lines.Add(new LineAndIndex(lt, j));
+                    }
+                    else
+                    {
+                        break;
+                    }
+                    i++;
+                }
+            }
+        }
+
+        foreach (AL_FM_IniSection section in sections)
+        {
+            ulong size = 0;
+            for (int i = 0; i < section.Lines.Count; i++)
+            {
+                LineAndIndex lineAndIndex = section.Lines[i];
+                if (lineAndIndex.Line.TryGetValueO("Archive=", out string archive))
+                {
+                    if (archivePaths.Count > 0)
+                    {
+                        List<string> finalArchivePaths = Utils.GetFMArchivePaths(archivePaths, includeSubfolders);
+                        string fullArchivePath = Utils.FindFirstMatch(archive, finalArchivePaths);
+                        if (!fullArchivePath.IsEmpty())
+                        {
+                            try
+                            {
+                                size = (ulong)(new FileInfo(fullArchivePath).Length);
+                            }
+                            catch
+                            {
+                                // ignore
+                            }
+                        }
+                    }
+                    lineAndIndex.Line = "Archive=" + Path.GetFileNameWithoutExtension(archive) + ".7z";
+                }
+            }
+
+            if (size > 0)
+            {
+                for (int i = 0; i < section.Lines.Count; i++)
+                {
+                    LineAndIndex lineAndIndex = section.Lines[i];
+                    if (lineAndIndex.Line.TryGetValueO("SizeBytes=", out _))
+                    {
+                        lineAndIndex.Line = "SizeBytes=" + size.ToStrInv();
+                    }
+                }
+            }
+        }
+    }
+
+    #endregion
 }

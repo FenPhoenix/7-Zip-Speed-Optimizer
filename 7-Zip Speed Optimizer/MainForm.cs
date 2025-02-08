@@ -1,4 +1,4 @@
-//#define DEV_TESTING
+#define DEV_TESTING
 
 using System;
 using System.ComponentModel;
@@ -33,6 +33,7 @@ public sealed partial class MainForm : Form, IEventDisabler
 
     private void Test1Button_Click(object sender, EventArgs e)
     {
+        Core.UpdateAngelLoaderDatabaseTo7z();
     }
 
     #endregion
