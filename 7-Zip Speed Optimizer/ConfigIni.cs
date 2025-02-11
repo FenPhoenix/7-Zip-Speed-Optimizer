@@ -52,6 +52,10 @@ internal static class ConfigIni
                     Config.Threads = result;
                 }
             }
+            else if (lineT.TryGetValueO("IgnoreFMSelBakFiles=", out value))
+            {
+                Config.IgnoreFMSelBakFiles = value.EqualsTrue();
+            }
         }
     }
 
@@ -62,5 +66,6 @@ internal static class ConfigIni
         sw.WriteLine("CompressionLevel=" + Config.CompressionLevel.ToStrInv());
         sw.WriteLine("CompressionMethod=" + Config.CompressionMethod);
         sw.WriteLine("Threads=" + Config.Threads.ToStrInv());
+        sw.WriteLine("IgnoreFMSelBakFiles=" + Config.IgnoreFMSelBakFiles);
     }
 }

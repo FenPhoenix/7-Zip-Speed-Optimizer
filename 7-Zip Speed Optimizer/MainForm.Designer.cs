@@ -58,8 +58,9 @@ sealed partial class MainForm
             this.RepackOutputDirectoryTextBox = new System.Windows.Forms.TextBox();
             this.StatusGroupBox = new System.Windows.Forms.GroupBox();
             this.ProgressSubMessageLabel = new System.Windows.Forms.Label();
-            this.SubProgressBar = new ProgressBarCustom();
-            this.MainProgressBar = new ProgressBarCustom();
+            this.SubProgressBar = new SevenZipSpeedOptimizer.ProgressBarCustom();
+            this.MainProgressBar = new SevenZipSpeedOptimizer.ProgressBarCustom();
+            this.IgnoreFMSelBakFilesCheckBox = new System.Windows.Forms.CheckBox();
             this.MainPanel.SuspendLayout();
             this.ModeTabControl.SuspendLayout();
             this.CreateTabPage.SuspendLayout();
@@ -275,6 +276,7 @@ sealed partial class MainForm
             // 
             // RepackTabPage
             // 
+            this.RepackTabPage.Controls.Add(this.IgnoreFMSelBakFilesCheckBox);
             this.RepackTabPage.Controls.Add(this.ClearSourceArchivesButton);
             this.RepackTabPage.Controls.Add(this.RemoveSourceArchiveButton);
             this.RepackTabPage.Controls.Add(this.AddSourceArchiveButton);
@@ -410,6 +412,19 @@ sealed partial class MainForm
             this.MainProgressBar.TabIndex = 1;
             this.MainProgressBar.Visible = false;
             // 
+            // IgnoreFMSelBakFilesCheckBox
+            // 
+            this.IgnoreFMSelBakFilesCheckBox.AutoSize = true;
+            this.IgnoreFMSelBakFilesCheckBox.Checked = true;
+            this.IgnoreFMSelBakFilesCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.IgnoreFMSelBakFilesCheckBox.Location = new System.Drawing.Point(16, 224);
+            this.IgnoreFMSelBakFilesCheckBox.Name = "IgnoreFMSelBakFilesCheckBox";
+            this.IgnoreFMSelBakFilesCheckBox.Size = new System.Drawing.Size(129, 17);
+            this.IgnoreFMSelBakFilesCheckBox.TabIndex = 8;
+            this.IgnoreFMSelBakFilesCheckBox.Text = "Ignore FMSelBak files";
+            this.IgnoreFMSelBakFilesCheckBox.UseVisualStyleBackColor = true;
+            this.IgnoreFMSelBakFilesCheckBox.CheckedChanged += new System.EventHandler(this.IgnoreFMSelBakFilesCheckBox_CheckedChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -423,7 +438,6 @@ sealed partial class MainForm
             this.Text = "7-Zip Speed Optimizer";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
-            this.Load += new System.EventHandler(this.MainForm_Load);
             this.MainPanel.ResumeLayout(false);
             this.MainPanel.PerformLayout();
             this.ModeTabControl.ResumeLayout(false);
@@ -471,4 +485,5 @@ sealed partial class MainForm
     private System.Windows.Forms.Button AddSourceArchiveButton;
     private System.Windows.Forms.Label ProgressSubMessageLabel;
     private ProgressBarCustom SubProgressBar;
+    private System.Windows.Forms.CheckBox IgnoreFMSelBakFilesCheckBox;
 }

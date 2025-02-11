@@ -70,6 +70,8 @@ public sealed partial class MainForm : Form, IEventDisabler
 
     #region Getters and setters
 
+    public void SetIgnoreFMSelBakFiles(bool value) => IgnoreFMSelBakFilesCheckBox.Checked = value;
+
     public bool DragDropEnabled => _operationTypeInProgress == OperationType.None;
 
     public void SetMode(Mode mode)
@@ -548,8 +550,8 @@ public sealed partial class MainForm : Form, IEventDisabler
         }
     }
 
-    private void MainForm_Load(object sender, EventArgs e)
+    private void IgnoreFMSelBakFilesCheckBox_CheckedChanged(object sender, EventArgs e)
     {
-
+        Config.IgnoreFMSelBakFiles = IgnoreFMSelBakFilesCheckBox.Checked;
     }
 }

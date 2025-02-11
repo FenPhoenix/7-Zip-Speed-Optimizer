@@ -37,6 +37,8 @@ public sealed class ConfigData
             }
         }
     }
+
+    public bool IgnoreFMSelBakFiles = true;
 }
 
 public sealed class FriendlyStringAndBackingValue<TBacking>
@@ -54,6 +56,8 @@ public sealed class FriendlyStringAndBackingValue<TBacking>
 public static class Global
 {
     public const int MAX_PATH = 260;
+
+    public const string FMSelBak = ".FMSelBak.";
 
     public enum MBoxButton
     {

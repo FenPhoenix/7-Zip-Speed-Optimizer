@@ -32,6 +32,7 @@ internal static class Core
         View.SetCompressionLevel(Config.CompressionLevel);
         View.SetCompressionMethod(Config.CompressionMethod);
         View.SetThreads(Config.Threads);
+        View.SetIgnoreFMSelBakFiles(Config.IgnoreFMSelBakFiles);
 
         View.Show();
     }
@@ -586,6 +587,31 @@ internal static class Core
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
             return;
+        }
+
+        if (Config.IgnoreFMSelBakFiles)
+        {
+            List<string> list = sourceArchives.ToList();
+            for (int i = 0; i < list.Count; i++)
+            {
+                string fileName = Path.GetFileName(list[i]);
+                if (fileName.ContainsI(FMSelBak))
+                {
+                    list.RemoveAt(i);
+                    i--;
+                }
+            }
+            sourceArchives = list.ToArray();
+
+            if (sourceArchives.Length == 0)
+            {
+                MessageBox.Show(
+                    "The archives list contains only FMSelBak files, and those files are being ignored. There is nothing to convert.",
+                    "Alert",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
         }
 
         await Task.Run(() =>
